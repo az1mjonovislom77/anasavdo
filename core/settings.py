@@ -103,8 +103,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Uzbek Foodstuff',
-    'DESCRIPTION': 'Uzbek Foodstuff project',
+    'TITLE': 'Anasavdo',
+    'DESCRIPTION': 'Anasavdo project',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
