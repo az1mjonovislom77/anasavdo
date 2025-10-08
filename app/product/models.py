@@ -23,7 +23,7 @@ class Category(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-        if not self.slug or Category.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+        if not self.slug:
             base_slug = slugify(self.name)
             unique_slug = base_slug
             num = 1
