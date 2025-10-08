@@ -5,7 +5,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView,
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.core.cache import cache
 from app.product.models import Category, Product, Comment, CategoryImages, ProductImage, ProductColor, ProductValue, \
     ProductType
 from app.product.serializers import CategorySerializer, ProductSerializer, AllProductSerializer, CommentSerializer, \
@@ -27,17 +27,28 @@ class CategoryAPIView(APIView):
         return [IsAuthenticated()]
 
     def get(self, request):
-        category = Category.objects.filter(is_active=True)
-        serializer = CategoryGetSerializer(category, many=True, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # ✅ Hamma uchun bitta cache kalit
+        cache_key = "category_list"
+        data = cache.get(cache_key)
+
+        if not data:
+            print("🧠 Cache’da yo‘q — DB’dan olayapti...")
+            categories = Category.objects.filter(is_active=True).prefetch_related('images')
+            serializer = CategoryGetSerializer(categories, many=True, context={'request': request})
+            data = serializer.data
+            cache.set(cache_key, data, 60 * 10)
+        else:
+            print("⚡ Cache’dan olayapti!")
+
+        return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            cache.delete("category_list")  # 🧹 Cache’ni tozalash
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @extend_schema(tags=['Category'])
 class CategoryDetailAPIView(APIView):
