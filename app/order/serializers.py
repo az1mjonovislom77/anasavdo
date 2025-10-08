@@ -1,13 +1,10 @@
 from decimal import Decimal
-
-from django.core.files import images
 from rest_framework import serializers
 
-from app.order.models import Order, Item, ItemValue, ProductValue, ProductColor
-from app.user.validations import check_valid_phone, validate_phone_number
+from app.order.models import Order, Item, ItemValue, ProductValue
+from app.user.validations import validate_phone_number
 from app.utils.models import Location
 from app.utils.serializers import LocationSerializer
-from core import settings
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -28,11 +25,6 @@ class ItemSerializer(serializers.ModelSerializer):
         images = obj.product.productimage_set.all()
         return [request.build_absolute_uri(img.image.url) for img in images if img.image]
 
-    # def validate_quantity(self, data):
-    #     print('order quantity data', data)
-    #     return data
-
-
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['product'] = instance.product.title
@@ -46,105 +38,12 @@ class ItemSerializer(serializers.ModelSerializer):
             tmp.append(feature.feature.type.name)
         data['feature'] = tmp
         return data
-"""
-import os
-import random
-import string
-import uuid
 
-import pandas as pd
-import csv
-from django.contrib.auth.hashers import make_password
-from django.db import transaction
-from app.users.models import User
-from core import settings
-
-
-def generate_username():
-    # uuid.uuid4.__str__() -> c303282d-f2e6-46ca-a04a-35d3d873712d (takrorlanmas kod yasab beradi)
-    temp_username = f"user_{uuid.uuid4().__str__().split('-')[1]}"
-    while User.objects.filter(username=temp_username):
-        temp_username = f"{temp_username}{random.randint(0, 9)}"
-    return temp_username
-
-
-def generate_password(length: int = 8) -> str:
-    chars = string.ascii_letters + string.digits
-    password = ''.join(random.choices(chars, k=length))
-    return password
-
-
-def import_user_from_excel(file_path):
-    all_rows = pd.read_excel(file_path, header=None)
-    total_rows = len(all_rows)
-
-    for header_row in range(min(total_rows, 10)):
-        df = pd.read_excel(file_path, header=header_row)
-        df = df.loc[:, ~df.columns.str.contains('^Unnamed', case=False)]
-
-        if len(df.columns) >= 2:
-            break
-    else:
-        raise ValueError("Excel faylda kerakli sarlavha topilmadi!")
-
-    df.columns = df.columns.str.strip().str.lower().str.replace(u'\xa0', ' ')
-
-    required_columns = ["full_name", "phone_number"]
-    for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(
-                f"Excel faylda '{col}' ustuni topilmadi! Hozirgi ustunlar: {df.columns.tolist()}"
-            )
-
-    created_users = []
-    created_count = 0
-    updated_count = 0
-
-    with transaction.atomic():
-        for _, row in df.iterrows():
-            full_name = str(row.get("full_name", "")).strip()
-            phone_number = str(row.get("phone_number", "")).strip()
-
-            if not phone_number:
-                continue
-
-            password = generate_password()
-            hash_password = make_password(password)
-
-            user, created = User.objects.update_or_create(
-                phone_number=phone_number,
-                defaults={
-                    "username": generate_username(),
-                    "full_name": full_name,
-                    "role": User.UserRoles.SQUAD,
-                    "password": hash_password,
-                },
-            )
-
-            if created:
-                created_count += 1
-                created_users.append([user.username, password])
-            else:
-                updated_count += 1
-
-    # 📂 Faylni media papkaga yozamiz
-    os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
-    file_path = os.path.join(settings.MEDIA_ROOT, "created_users.csv")
-
-    pd.DataFrame(created_users, columns=["username", "password"]).to_csv(file_path, index=False)
-
-    print(f"{created_count} ta yangi user yaratildi, {updated_count} ta user yangilandi.")
-    return {
-        "created": created_count,
-        "updated": updated_count,
-        "file_url": settings.MEDIA_URL + "created_users.csv"  # 🔗 Admin orqali olish mumkin
-    }
-"""
 
 ZERO = Decimal("0.00")
 
+
 def safe_decimal(value, default=ZERO):
-    """Qiymatni xavfsiz Decimal ga aylantirish"""
     try:
         if value in [None, "", "nan", "NaN"]:
             return default
@@ -216,11 +115,9 @@ class OrderSerializer(serializers.ModelSerializer):
         items_data = validated_data.pop('items', None)
         location_data = validated_data.pop('location', None)
 
-        # Oddiy fieldlarni yangilash
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        # Location yangilash
         if location_data:
             if instance.location:
                 for attr, value in location_data.items():
@@ -229,12 +126,10 @@ class OrderSerializer(serializers.ModelSerializer):
             else:
                 instance.location = Location.objects.create(**location_data)
 
-        # Items yangilash
         if items_data is not None:
             instance.items.all().delete()
             self._create_items(instance, items_data)
 
-        # Umumiy narxni qayta hisoblash
         price = ZERO
         for item in instance.items.all():
             price += safe_decimal(item.price)
@@ -244,7 +139,6 @@ class OrderSerializer(serializers.ModelSerializer):
         return instance
 
     def _create_items(self, order, items_data):
-        """Buyurtmaga itemlar yaratish yordamchi metodi"""
         for item in items_data:
             features = item.pop('feature', [])
             item['order'] = order
@@ -293,10 +187,11 @@ class ItemHistorySerializer(serializers.ModelSerializer):
             data['image'] = None
         return data
 
+
 class OrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['status',]
+        fields = ['status', ]
 
 
 class OrderHistorySerializer(serializers.ModelSerializer):

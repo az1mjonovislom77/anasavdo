@@ -1,19 +1,15 @@
 import re
-
 from django.utils import timezone
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
-
 from app.user.models import User, VerificationOTP
-from app.user.utils import generate_code
-from app.user.validations import check_valid_email, check_valid_phone, validate_phone_number
+from app.user.validations import check_valid_phone, validate_phone_number
 from app.utils.utility import send_phone_number_code
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = (
@@ -68,9 +64,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 
-
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = (
@@ -97,12 +91,12 @@ class UserSerializer(serializers.ModelSerializer):
 
         return data
 
-
     def update(self, instance, validated_data):
         phone_number = validated_data.get('phone_number')
         username = validated_data.get('username')
         if username != phone_number:
-            raise serializers.ValidationError({'message': "You can change your username only by changing your phone number!"})
+            raise serializers.ValidationError(
+                {'message': "You can change your username only by changing your phone number!"})
 
         validated_data.pop("password", None)
         validated_data.pop("phone_number", None)
@@ -154,7 +148,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         print('data', data)
 
         return data
-
 
     def create(self, validated_data):
         username = validated_data.get('username')
@@ -222,7 +215,6 @@ class VerifyOTPSerializer(serializers.Serializer):
 
 
 class MeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ("id", "full_name", "phone_number", "image")

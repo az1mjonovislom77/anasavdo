@@ -1,4 +1,4 @@
-from  django.urls import path
+from django.urls import path
 
 from app.about.views import OurContactAPIView, ContactAPIView, SocialMediaAPIView, BannerAPIView, NewsAPIView, \
     AboutAPIView, AboutDetailAPIView, BannerDetailAPIView, ContactSDetailAPIView, NewsDetailAPIView, \
@@ -12,7 +12,6 @@ urlpatterns = [
     # contact
     path('our-contact/', OurContactAPIView.as_view(), name='our-contact'),
     path('our-contact/<int:pk>/', OurContactDetailView.as_view(), name='our-contact'),
-
 
     path('contact/', ContactAPIView.as_view(), name='contact'),
     path('contact/<int:pk>/', ContactSDetailAPIView.as_view(), name='contact-detail'),

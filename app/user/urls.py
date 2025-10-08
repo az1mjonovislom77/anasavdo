@@ -1,12 +1,10 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-
 from app.user.views import (
     SignUpView, SignInView, VerifyOTPView, MeAPIView, MeEditAPIView, ForgotPasswordAPIView,
     ChangePasswordAPIView, DeleteAccountAPIView, ResetPasswordAPIView, AdminPanelSignInView, UserDetailAPIView,
     UserAPIView, VerifyPhoneNumberAPIView, ChangePhoneNumberRequestAPIView
 )
-
 
 urlpatterns = [
     path('', UserAPIView.as_view(), name='user'),

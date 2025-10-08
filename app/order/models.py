@@ -57,17 +57,6 @@ class Item(models.Model):
     class Meta:
         db_table = 'item'
 
-"""
-    product_name = models.CharField(max_length=100, null=True, blank=True)
-    product_price = models.DecimalField(decimal_places=2, max_digits=12, null=True, blank=True)
-    image = models.ImageField(upload_to='images/item/', validators=[
-        FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heic', 'heif']),
-        check_image_size])
-    color_name = models.CharField(max_length=100, null=True, blank=True)
-    color_image = models.ImageField(upload_to='images/item/', validators=[
-        FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heic', 'heif']),
-        check_image_size])
-"""
 
 class ItemValue(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)

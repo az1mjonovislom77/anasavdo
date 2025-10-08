@@ -22,7 +22,6 @@ from app.utils.utility import send_phone_number_code
 @extend_schema(tags=["user"])
 class UserAPIView(APIView):
     permission_classes = (AllowAny,)
-    # permission_classes = (IsAdminOrSuperAdmin,)
     serializer_class = CreateUserSerializer
 
     def get(self, request):
@@ -33,9 +32,6 @@ class UserAPIView(APIView):
     def post(self, request):
         serializer = CreateUserSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            # print('sss', serializer.data.get('auth_type'))
-            # if serializer.validated_data['auth_type'] is None:
-            #     serializer.validated_data['auth_type'] = User.AuthType.phone_number
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -48,7 +44,7 @@ class UserDetailAPIView(APIView):
 
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
-        serializer  = UserSerializer(user, context={'request': request})
+        serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
@@ -151,7 +147,6 @@ class AdminPanelSignInView(APIView):
                 }
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-
             user = serializer.validated_data.get('user')
 
             if user.role == User.UserRole.user:
@@ -214,7 +209,7 @@ class VerifyOTPView(APIView):
 @extend_schema(tags=['Profile'])
 class MeAPIView(RetrieveAPIView):
     serializer_class = MeSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
@@ -224,7 +219,7 @@ class MeAPIView(RetrieveAPIView):
 class MeEditAPIView(UpdateAPIView):
     serializer_class = MeSerializer
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     http_method_names = ['put']
 
     def get_object(self):
@@ -278,6 +273,7 @@ class VerifyPhoneNumberAPIView(APIView):
             'success': True,
             'message': "Phone number successfully updated data"
         }, status=status.HTTP_200_OK)
+
 
 @extend_schema(tags=['Auth'])
 class ForgotPasswordAPIView(APIView):
@@ -334,7 +330,7 @@ class ForgotPasswordAPIView(APIView):
 @extend_schema(tags=['Auth'])
 class ChangePasswordAPIView(APIView):
     serializer_class = ChangePasswordSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         try:
@@ -367,7 +363,7 @@ class ChangePasswordAPIView(APIView):
 
 @extend_schema(tags=['Profile'])
 class DeleteAccountAPIView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def delete(self, request):
         user = get_object_or_404(User, username=request.user)
@@ -381,7 +377,7 @@ class DeleteAccountAPIView(APIView):
 @extend_schema(tags=['Auth'])
 class ResetPasswordAPIView(APIView):
     serializer_class = ResetPasswordSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         try:
@@ -418,6 +414,3 @@ class ResetPasswordAPIView(APIView):
                 'message': str(e)
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
-
-

@@ -29,27 +29,6 @@ class CommentSerializer(serializers.ModelSerializer):
                 {"detail": "Siz faqat sotib olgan mahsulotlaringizga sharh qoldira olasiz."}
             )
 
-        # if user.order_set.filter(product=product).exists():
-        #     print('ishladi')
-        # else:
-        #     print('no')
-            # print(product, user.order_set.filter(product=product).first())
-
-        # # 1️⃣ — Bir user bir product uchun bitta comment qoldira oladi
-        # if Comment.objects.filter(user=user, product=product).exists():
-        #     raise serializers.ValidationError(
-        #         {"detail": "Siz bu mahsulot uchun allaqachon sharh qoldirgansiz."}
-        #     )
-        """    
-        user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    rate = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], default=0)
-    message = models.TextField()
-    is_active = models.BooleanField(default=False)
-    created = models.DateTimeField(default=timezone.now)
-"""
-
-        # Comment yaratish
         comment = Comment.objects.create(
             user=user,
             product=product,
@@ -84,6 +63,7 @@ class CategoryGetSerializer(serializers.ModelSerializer):
         rep['name'] = getattr(instance, f"name_{lang}", instance.name)
         return rep
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -114,15 +94,18 @@ class ColorSerializer(serializers.ModelSerializer):
         model = Color
         fields = ('id', 'name_uz', 'name_en', 'name_ru', 'image')
 
+
 class ProductTypeGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ('id', 'product', 'name')
 
+
 class ProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ('id', 'product', 'name_uz', 'name_en', 'name_ru')
+
 
 class ProductColorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -191,7 +174,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'category', 'title', 'title_uz', 'title_en', 'title_ru', 'description_uz', 'description_en', 'description_ru', 'price', 'old_price', 'images', 'colors', 'features')
+        fields = ('id', 'category', 'title', 'title_uz', 'title_en', 'title_ru', 'description_uz', 'description_en',
+                  'description_ru', 'price', 'old_price', 'images', 'colors', 'features')
         extra_kwargs = {
             'title': {'required': False},
             'category': {'required': True},
@@ -209,7 +193,8 @@ class AllProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'title_uz', 'title_en', 'title_ru', 'description', 'description_uz', 'description_en', 'description_ru', 'price', 'old_price', 'images', 'features')
+        fields = ('id', 'title', 'title_uz', 'title_en', 'title_ru', 'description', 'description_uz', 'description_en',
+                  'description_ru', 'price', 'old_price', 'images', 'features')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -228,4 +213,3 @@ class CategoryImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryImages
         fields = ('id', 'image')
-

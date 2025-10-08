@@ -1,10 +1,7 @@
 import phonenumbers
 from django.core.exceptions import ValidationError
 import re
-
 from rest_framework import permissions
-
-
 
 
 def check_image_size(image):
@@ -47,23 +44,14 @@ class IsAdminOrSuperAdmin(permissions.BasePermission):
         return bool(request.user.is_authenticated and
                     (request.user.role == User.UserRole.admin or request.user.role == User.UserRole.superadmin))
 
+
 class IsAdminOrOwner(permissions.BasePermission):
-    """
-    Ruxsat faqat admin/superadmin yoki comment egasiga beriladi
-    """
+
     def has_permission(self, request, view):
-        # admin yoki superuser bo'lsa
         print('salom1')
         print('obj')
-        # print('obj.user == request.user', obj.user == request.user)
         from app.user.models import User
         if request.user.role == User.UserRole.admin or request.user.role == User.UserRole.superadmin:
             print('salom2')
             return True
-        # yoki comment egasi bo'lsa
         return True
-
-# class IsAdminOrOwner(permissions.BasePermission):
-#     def has_object_permission(self, request, view, obj):
-#         from app.user.models import User
-#         return bool(request.user.is_authenticateda and (request.user.role == User.UserRole.admin or request.user.role == User.UserRole.superadmin or obj.user == request.user))

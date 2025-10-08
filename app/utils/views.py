@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -13,7 +12,7 @@ from app.utils.serializers import NotificationSerializer, CurrencySerializer, Cu
 
 class NotificationAPIView(generics.ListAPIView):
     serializer_class = NotificationSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
@@ -21,14 +20,14 @@ class NotificationAPIView(generics.ListAPIView):
 
 
 class CurrencyGetAPIView(ListAPIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     queryset = Currency.objects.all()
     serializer_class = CurrencyGetSerializer
 
 
 class CurrencyAPIView(APIView):
     serializer_class = CurrencySerializer
-    permission_classes = (IsAdminOrSuperAdmin, )
+    permission_classes = (IsAdminOrSuperAdmin,)
 
     def put(self, request, pk):
         currency = Currency.objects.get(pk=pk)

@@ -29,7 +29,7 @@ class OrderCreateAPIView(CreateAPIView):
 
 @extend_schema(tags=['Order'])
 class OrderDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = OrderSerializer
 
     def get(self, request, pk):
@@ -91,7 +91,7 @@ class OrderCancelAPIView(APIView):
 
 @extend_schema(tags=['Order'])
 class OrderStatusAPIView(APIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = OrderStatusSerializer
 
     def patch(self, request, pk):
@@ -101,6 +101,7 @@ class OrderStatusAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=['Order'])
 class OrderHistoryAPIView(ListAPIView):

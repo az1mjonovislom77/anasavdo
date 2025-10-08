@@ -14,7 +14,6 @@ class OurContact(models.Model):
 
 
 class News(models.Model):
-
     class NewsType(models.TextChoices):
         products = 'p', 'products'
         services = 's', 'services'
@@ -65,8 +64,9 @@ class SocialMedia(models.Model):
 
 class Banner(models.Model):
     image = models.ImageField(upload_to='images/banners/',
-                              validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heif', 'heic', 'avif']),
-                                          check_image_size])
+                              validators=[FileExtensionValidator(
+                                  allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heif', 'heic', 'avif']),
+                                  check_image_size])
 
     def __str__(self):
         return self.image.url

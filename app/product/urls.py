@@ -1,7 +1,7 @@
 from django.urls import path
 
 from app.product.views import CategoryAPIView, ProductAPIView, AllProductAPIView, CreateCommentAPIView, \
-     ProductByCategoryAPIView, CategoryDetailAPIView, ProductDetailAPIView,  \
+    ProductByCategoryAPIView, CategoryDetailAPIView, ProductDetailAPIView, \
     ProductImageAPIView, ProductColorsAPIView, ColorAPIView, ProductFeaturesAPIView, ProductTypeAPIView, \
     ColorDetailAPIView, ProductImageDetailAPIVIew, ProductFeaturesDetailAPIView, ProductTypeDetailAPIView, \
     ProductColorsDetailAPIView, ListCommentAPIView, DetailCommentAPIView
@@ -31,7 +31,6 @@ urlpatterns = [
     # category
     path('categories/', CategoryAPIView.as_view(), name='list-create-category'),
     path('categories/<int:pk>/', CategoryDetailAPIView.as_view(), name='detail-category'),
-
 
     path('comments/create/', CreateCommentAPIView.as_view(), name='create-comment'),
     path('comments/all/<int:pk>/', ListCommentAPIView.as_view(), name='list-comment'),

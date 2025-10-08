@@ -23,12 +23,14 @@ class ProductValueTabular(UnfoldTabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(TranslationAdmin, UnfoldModelAdmin):
-    prepopulated_fields = {"slug": ("name", )}
+    prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'slug', 'is_active')
+
 
 @admin.register(CategoryImages)
 class CategoryImagesAdmin(UnfoldModelAdmin):
     list_display = ('id', 'category', 'image')
+
 
 @admin.register(ProductType)
 class ProductTypeAdmin(TranslationAdmin, UnfoldModelAdmin):

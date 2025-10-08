@@ -13,15 +13,18 @@ from app.bot.utils import send_telegram_credentials, create_otp_code, delete_tmp
 from app.user.authentication import IgnoreBadTokenAuthentication
 from app.user.models import User
 
+
 @extend_schema(tags=['Bot'])
 class SaveUserView(generics.CreateAPIView):
     serializer_class = BotUserSerializer
     queryset = BotUser.objects.all()
 
+
 @extend_schema(tags=['Bot'])
 class RegisterVerifyView(APIView):
     serializer_class = CodeSerializer
-    authentication_classes = [IgnoreBadTokenAuthentication,]
+    authentication_classes = [IgnoreBadTokenAuthentication, ]
+
     def post(self, request):
         try:
             otp = request.data.get('code')

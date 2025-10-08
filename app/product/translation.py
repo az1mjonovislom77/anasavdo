@@ -1,11 +1,10 @@
 from modeltranslation.translator import register, TranslationOptions
-
 from app.product.models import Category, Product, ProductType
 
 
 @register(Category)
 class CategoryTranslation(TranslationOptions):
-    fields = ('name', )
+    fields = ('name',)
 
 
 @register(Product)
@@ -15,4 +14,4 @@ class ProductTranslation(TranslationOptions):
 
 @register(ProductType)
 class ProductTypeTranslation(TranslationOptions):
-    fields = ('name', )
+    fields = ('name',)

@@ -49,7 +49,6 @@ class OurContactDetailView(views.APIView):
             return [IsAdminOrSuperAdmin()]
         return [IsAuthenticated()]
 
-
     def put(self, request, pk):
         our_contact = get_object_or_404(OurContact, pk=pk)
         serializer = OurContactSerializer(our_contact, data=request.data, context={'request': request}, partial=True)
@@ -82,7 +81,7 @@ class ContactSDetailAPIView(views.APIView):
     serializer_class = ContactSerializer
 
     def get_permissions(self):
-        if self.request.method in ['GET','PUT','DELETE']:
+        if self.request.method in ['GET', 'PUT', 'DELETE']:
             return [IsAdminOrSuperAdmin()]
         return [IsAuthenticated()]
 
@@ -103,7 +102,6 @@ class ContactSDetailAPIView(views.APIView):
         contact = get_object_or_404(Contact, pk=pk)
         contact.delete()
         return Response({'message': "Contact deleted successfully!"}, status=status.HTTP_200_OK)
-
 
 
 @extend_schema(tags=['Social Media'])
@@ -134,7 +132,7 @@ class SocialMediaDetailAPIView(views.APIView):
 
     def get(self, request, pk):
         social_media = get_object_or_404(SocialMedia, pk=pk)
-        serializer  = SocialMediaSerializer(social_media, context={'request': request})
+        serializer = SocialMediaSerializer(social_media, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
@@ -149,7 +147,6 @@ class SocialMediaDetailAPIView(views.APIView):
         social_media = get_object_or_404(SocialMedia, pk=pk)
         social_media.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 @extend_schema(tags=['News'])
@@ -206,7 +203,6 @@ class NewsDetailAPIView(views.APIView):
         news = get_object_or_404(News, pk=pk)
         news.delete()
         return Response({'message': "News successfully deleted!"}, status=status.HTTP_200_OK)
-
 
 
 @extend_schema(tags=['Banner'])

@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,7 +27,6 @@ class CategoryAPIView(APIView):
         return [IsAuthenticated()]
 
     def get(self, request):
-        # ✅ Hamma uchun bitta cache kalit
         cache_key = "category_list"
         data = cache.get(cache_key)
 
@@ -49,6 +48,7 @@ class CategoryAPIView(APIView):
             cache.delete("category_list")  # 🧹 Cache’ni tozalash
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=['Category'])
 class CategoryDetailAPIView(APIView):
@@ -133,7 +133,8 @@ class ProductImageDetailAPIVIew(APIView):
 
     def put(self, request, pk):
         product_image = get_object_or_404(ProductImage, pk=pk)
-        serializer = ProductImageSerializer(instance=product_image, data=request.data, context={'request': request}, partial=True)
+        serializer = ProductImageSerializer(instance=product_image, data=request.data, context={'request': request},
+                                            partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -159,7 +160,8 @@ class ProductFeaturesDetailAPIView(APIView):
 
     def put(self, request, pk):
         product_feature = get_object_or_404(ProductValue, pk=pk)
-        serializer = ProductValueSerializer(instance=product_feature, data=request.data, context={'request': request}, partial=True)
+        serializer = ProductValueSerializer(instance=product_feature, data=request.data, context={'request': request},
+                                            partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -188,6 +190,7 @@ class ProductTypeAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema(tags=['Product type'])
 class ProductTypeDetailAPIView(APIView):
     permission_classes = [IsAdminOrSuperAdmin]
@@ -195,7 +198,8 @@ class ProductTypeDetailAPIView(APIView):
 
     def put(self, request, pk):
         product_type = get_object_or_404(ProductType, pk=pk)
-        serializer = ProductTypeSerializer(instance=product_type, data=request.data, context={'request': request}, partial=True)
+        serializer = ProductTypeSerializer(instance=product_type, data=request.data, context={'request': request},
+                                           partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -258,7 +262,8 @@ class ProductColorsDetailAPIView(APIView):
 
     def put(self, request, pk):
         product_color = get_object_or_404(Color, pk=pk)
-        serializer = ProductColorSerializer(instance=product_color, data=request.data, context={'request': request}, partial=True)
+        serializer = ProductColorSerializer(instance=product_color, data=request.data, context={'request': request},
+                                            partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -308,7 +313,7 @@ class ProductDetailAPIView(APIView):
 
 @extend_schema(tags=['Product comment'])
 class CreateCommentAPIView(CreateAPIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
 
@@ -369,7 +374,7 @@ class ProductByCategoryAPIView(APIView):
         products = category.products.all()
         images = CategoryImages.objects.filter(category__slug=slug)
 
-        product_data = ProductSerializer(products, many=True, context={"request":request}).data
+        product_data = ProductSerializer(products, many=True, context={"request": request}).data
         images_data = CategoryImagesSerializer(images, many=True).data
 
         data = {
@@ -377,5 +382,3 @@ class ProductByCategoryAPIView(APIView):
             'images': images_data
         }
         return Response(data)
-
-

@@ -11,7 +11,6 @@ class Color(models.Model):
         FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp']),
         check_image_size
     ])
-
     name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -39,7 +38,6 @@ class Location(models.Model):
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-
     title = models.CharField(max_length=50)
     message = models.TextField(null=True, blank=True)
     private = models.BooleanField(default=True)

@@ -17,13 +17,13 @@ class ItemValueInline(UnfoldTabularInline):
 @admin.register(Order)
 class OrderAdmin(UnfoldModelAdmin):
     list_display = ('id', 'user', 'status', 'created', 'price')
-    inlines = (ItemInline, )
+    inlines = (ItemInline,)
 
 
 @admin.register(Item)
 class ItemAdmin(UnfoldModelAdmin):
     list_display = ('id', 'order', 'product')
-    inlines = (ItemValueInline, )
+    inlines = (ItemValueInline,)
 
 
 @admin.register(ItemValue)

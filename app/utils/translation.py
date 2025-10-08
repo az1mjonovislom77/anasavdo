@@ -5,9 +5,9 @@ from app.utils.models import Color, Currency
 
 @register(Color)
 class ColorTranslation(TranslationOptions):
-    fields = ('name', )
+    fields = ('name',)
 
 
 @register(Currency)
 class CurrencyTranslation(TranslationOptions):
-    fields = ('name', )
+    fields = ('name',)

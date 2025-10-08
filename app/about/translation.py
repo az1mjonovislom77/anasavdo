@@ -10,4 +10,4 @@ class OurContactTranslationOptions(TranslationOptions):
 
 @register(News)
 class NewsTranslationOptions(TranslationOptions):
-    fields = ('title', 'description', 'type', )
+    fields = ('title', 'description', 'type',)
