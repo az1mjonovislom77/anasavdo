@@ -89,7 +89,6 @@ class VerificationOTP(models.Model):
         telegram = 't', 'telegram'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     code = models.CharField(max_length=6, validators=[check_code_validator])
     expires_time = models.DateTimeField()
     is_confirmed = models.BooleanField(default=False)
