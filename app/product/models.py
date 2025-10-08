@@ -10,16 +10,27 @@ from app.utils.models import Color
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
-    image = models.ImageField(upload_to='images/category/', validators=[
-        FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp']),
-        check_image_size
-    ], default='images/category/default-category.jpg')
+    image = models.ImageField(
+        upload_to='images/category/',
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp']),
+            check_image_size
+        ],
+        default='images/category/default-category.jpg'
+    )
     slug = models.SlugField(max_length=30, unique=True, blank=True)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        if not self.slug or Category.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            base_slug = slugify(self.name)
+            unique_slug = base_slug
+            num = 1
+            while Category.objects.filter(slug=unique_slug).exclude(pk=self.pk).exists():
+                unique_slug = f"{base_slug}-{num}"
+                num += 1
+            self.slug = unique_slug
         super().save(*args, **kwargs)
 
     def __str__(self):
